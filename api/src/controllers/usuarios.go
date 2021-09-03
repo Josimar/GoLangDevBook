@@ -5,6 +5,7 @@ import (
 	"api/src/models"
 	"api/src/repository"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -28,25 +29,30 @@ func CriarUsuario(w http.ResponseWriter, r *http.Request) {
 	}
 
 	repositorio := repository.NewUserRepository(db)
-	repositorio.Create(usuario)
+	usuarioId, erro := repositorio.Create(usuario)
+	if erro != nil {
+		log.Fatal(erro)
+	}
+
+	w.Write([]byte(fmt.Sprintf("ID inserido: %d", usuarioId)))
 }
 
-// BuscarUsuarios
+// BuscarUsuarios -> busca todos usuários
 func BuscarUsuarios(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Controllers -> BuscarUsuario -> Buscar usuários"))
 }
 
-// BuscarUsuario
+// BuscarUsuario -> busca um usuário
 func BuscarUsuario(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Controllers -> BuscarUsuario -> Buscar um usuário"))
 }
 
-// AtualizarUsuario
+// AtualizarUsuario -> atualiza um usuário
 func AtualizarUsuario(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Controllers -> AtualizarUsuario -> Atualizar um usuário"))
 }
 
-// ExcluirUsuario
+// ExcluirUsuario -> exclui um usuário
 func ExcluirUsuario(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Controllers -> ExcluirUsuario -> Excluir um usuário"))
 }
