@@ -10,7 +10,7 @@ import (
 	"net/http"
 )
 
-// CriarUsuario
+// CriarUsuario -> chamada de criação do usuário pelo controller
 func CriarUsuario(w http.ResponseWriter, r *http.Request) {
 	corpoRequest, erro := ioutil.ReadAll(r.Body)
 	if erro != nil {
@@ -20,6 +20,11 @@ func CriarUsuario(w http.ResponseWriter, r *http.Request) {
 
 	var usuario models.Usuario
 	if erro = json.Unmarshal(corpoRequest, &usuario); erro != nil {
+		messages.Erro(w, http.StatusBadRequest, erro)
+		return
+	}
+
+	if erro = usuario.Preparar(); erro != nil {
 		messages.Erro(w, http.StatusBadRequest, erro)
 		return
 	}
