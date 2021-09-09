@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
+	"strings"
 )
 
 // CriarUsuario -> chamada de criação do usuário pelo controller
@@ -49,7 +50,23 @@ func CriarUsuario(w http.ResponseWriter, r *http.Request) {
 
 // BuscarUsuarios -> busca todos usuários
 func BuscarUsuarios(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Controllers -> BuscarUsuario -> Buscar usuários"))
+	nomeOuEmail := strings.ToLower(r.URL.Query().Get("user"))
+
+	db, erro := banco.Conectar()
+	if erro != nil {
+		messages.Erro(w, http.StatusInternalServerError, erro)
+		return
+	}
+	defer db.Close()
+
+	repositorio := repository.NewUserRepository(db)
+	usuarios, erro := repositorio.Buscar(nomeOuEmail)
+	if erro != nil {
+		messages.Erro(w, http.StatusInternalServerError, erro)
+		return
+	}
+
+	messages.JSON(w, http.StatusOK, usuarios)
 }
 
 // BuscarUsuario -> busca um usuário
