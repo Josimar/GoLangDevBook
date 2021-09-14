@@ -10,7 +10,6 @@ import (
 )
 
 var (
-	// String de conexão com o SQL
 	StringConexaoBanco = ""
 
 	// Porta onde a API vai rodar
