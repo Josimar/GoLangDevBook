@@ -8,7 +8,6 @@ import (
 	"api/src/repository"
 	"api/src/security"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 )
@@ -46,7 +45,11 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, _ := authentication.CreateToken(usuarioSalvoBanco.ID)
-	fmt.Println(token)
+	token, erro := authentication.CreateToken(usuarioSalvoBanco.ID)
+	if erro != nil {
+		messages.Erro(w, http.StatusInternalServerError, erro)
+		return
+	}
+	// fmt.Println(token)
 	w.Write([]byte(token))
 }
