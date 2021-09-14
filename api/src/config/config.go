@@ -10,10 +10,14 @@ import (
 )
 
 var (
+	// StringConexaoBanco -> string of connection to database
 	StringConexaoBanco = ""
 
 	// Porta onde a API vai rodar
 	Porta = 0
+
+	// SecretKey -> key to use to check the token
+	SecretKey []byte
 )
 
 // Carregar -> vai carregar as váriaveis do ambiente
@@ -34,4 +38,6 @@ func Carregar() {
 		os.Getenv("DB_PASS"),
 		os.Getenv("DB_BASE"),
 	)
+
+	SecretKey = []byte(os.Getenv("SECRET_KEY"))
 }
