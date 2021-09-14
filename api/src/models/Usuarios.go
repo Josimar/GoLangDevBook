@@ -1,6 +1,7 @@
 package models
 
 import (
+	"api/src/security"
 	"errors"
 	"github.com/badoux/checkmail"
 	"strings"
@@ -22,7 +23,9 @@ func (usuario *Usuario) Preparar(etapa string) error {
 		return erro
 	}
 
-	usuario.formatar()
+	if erro := usuario.formatar(etapa); erro != nil {
+		return erro
+	}
 	return nil
 }
 
@@ -47,7 +50,17 @@ func (usuario *Usuario) validar(etapa string) error {
 }
 
 // formatar -> formatação dos campos
-func (usuario *Usuario) formatar() {
+func (usuario *Usuario) formatar(etapa string) error {
 	usuario.Name = strings.TrimSpace(usuario.Name)
 	usuario.Email = strings.TrimSpace(usuario.Email)
+
+	if etapa == "cadastro" {
+		senhaComHash, erro := security.Hash(usuario.Password)
+		if erro != nil {
+			return erro
+		}
+		usuario.Password = string(senhaComHash)
+	}
+
+	return nil
 }
