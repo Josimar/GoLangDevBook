@@ -143,5 +143,25 @@ func AtualizarUsuario(w http.ResponseWriter, r *http.Request) {
 
 // ExcluirUsuario -> exclui um usuário
 func ExcluirUsuario(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Controllers -> ExcluirUsuario -> Excluir um usuário"))
+	parametros := mux.Vars(r)
+	usuarioId, erro := strconv.ParseUint(parametros["id"], 10, 64)
+	if erro != nil {
+		messages.Erro(w, http.StatusBadRequest, erro)
+		return
+	}
+
+	db, erro := banco.Conectar()
+	if erro != nil {
+		messages.Erro(w, http.StatusInternalServerError, erro)
+		return
+	}
+	defer db.Close()
+
+	repositorio := repository.NewUserRepository(db)
+	if erro = repositorio.Deletar(usuarioId); erro != nil {
+		messages.Erro(w, http.StatusInternalServerError, erro)
+		return
+	}
+
+	messages.JSON(w, http.StatusNoContent, nil)
 }
