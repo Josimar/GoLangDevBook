@@ -191,3 +191,38 @@ func ExcluirUsuario(w http.ResponseWriter, r *http.Request) {
 
 	messages.JSON(w, http.StatusNoContent, nil)
 }
+
+func SeguirUsuario(w http.ResponseWriter, r *http.Request) {
+	seguidorId, erro := authentication.ExtrairUsuarioID(r)
+	if erro != nil {
+		messages.Erro(w, http.StatusUnauthorized, erro)
+		return
+	}
+
+	parametros := mux.Vars(r)
+	usuarioId, erro := strconv.ParseUint(parametros["id"], 10, 64)
+	if erro != nil {
+		messages.Erro(w, http.StatusBadRequest, erro)
+		return
+	}
+
+	if seguidorId == usuarioId {
+		messages.Erro(w, http.StatusForbidden, errors.New("you can not follow yourself"))
+		return
+	}
+
+	db, erro := banco.Conectar()
+	if erro != nil {
+		messages.Erro(w, http.StatusInternalServerError, erro)
+		return
+	}
+	defer db.Close()
+
+	repositorio := repository.NewUserRepository(db)
+	if erro = repositorio.Seguir(usuarioId, seguidorId); erro != nil {
+		messages.Erro(w, http.StatusInternalServerError, erro)
+		return
+	}
+
+	messages.JSON(w, http.StatusNoContent, nil)
+}

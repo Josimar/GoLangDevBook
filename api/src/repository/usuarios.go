@@ -142,3 +142,18 @@ func (repository usuarios) BuscarPorEmail(email string) (models.Usuario, error) 
 
 	return usuario, nil
 }
+
+// Seguir -> check one user follow another user
+func (repository usuarios) Seguir(usuarioId, seguidorId uint64) error {
+	statement, erro := repository.db.Prepare("INSERT INTO followers(user_id, follower_id) VALUES(?, ?)")
+	if erro != nil {
+		return erro
+	}
+	defer statement.Close()
+
+	if _, erro = statement.Exec(usuarioId, seguidorId); erro != nil {
+		return erro
+	}
+
+	return nil
+}
