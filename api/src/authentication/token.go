@@ -6,6 +6,7 @@ import (
 	"fmt"
 	jwt "github.com/dgrijalva/jwt-go"
 	"net/http"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -38,10 +39,31 @@ func ValidarToken(r *http.Request) error {
 	return errors.New("invalid token")
 }
 
+// ExtrairUsuarioID -> Extract user id
+func ExtrairUsuarioID(r *http.Request) (uint64, error) {
+	tokenString := extrairToken(r)
+	token, erro := jwt.Parse(tokenString, retornarChaveDeVerificacao)
+	if erro != nil {
+		return 0, erro
+	}
+
+	if permissoes, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		usuarioID, erro := strconv.ParseUint(fmt.Sprintf("%.0f", permissoes["id"]), 10, 64)
+		if erro != nil {
+			return 0, erro
+		}
+
+		return usuarioID, nil
+	}
+
+	return 0, errors.New("invalid token")
+}
+
+// extrairToken -> Separate the token of Bearer
 func extrairToken(r *http.Request) string {
 	token := r.Header.Get("Authorization")
 
-	// Bearer asdfgfdfshgjhkhgkg
+	// Bearer token
 	if len(strings.Split(token, " ")) == 2 {
 		return strings.Split(token, " ")[1]
 	}
@@ -49,6 +71,7 @@ func extrairToken(r *http.Request) string {
 	return ""
 }
 
+// retornarChaveDeVerificacao -> Return key of token
 func retornarChaveDeVerificacao(token *jwt.Token) (interface{}, error) {
 	if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 		return nil, fmt.Errorf("method unexpected! %v", token.Header["alg"])

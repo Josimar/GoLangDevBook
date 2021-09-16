@@ -1,11 +1,13 @@
 package controllers
 
 import (
+	"api/src/authentication"
 	"api/src/banco"
 	"api/src/messages"
 	"api/src/models"
 	"api/src/repository"
 	"encoding/json"
+	"errors"
 	"github.com/gorilla/mux"
 	"io/ioutil"
 	"net/http"
@@ -101,9 +103,21 @@ func BuscarUsuario(w http.ResponseWriter, r *http.Request) {
 // AtualizarUsuario -> atualiza um usuário
 func AtualizarUsuario(w http.ResponseWriter, r *http.Request) {
 	parametros := mux.Vars(r)
-	usuarioID, erro := strconv.ParseUint(parametros["id"], 10, 64)
+	usuarioId, erro := strconv.ParseUint(parametros["id"], 10, 64)
 	if erro != nil {
 		messages.Erro(w, http.StatusBadRequest, erro)
+		return
+	}
+
+	usuarioIDNoToken, erro := authentication.ExtrairUsuarioID(r)
+	if erro != nil {
+		messages.Erro(w, http.StatusUnauthorized, erro)
+		return
+	}
+
+	// fmt.Println(usuarioIDNoToken)
+	if usuarioId != usuarioIDNoToken {
+		messages.Erro(w, http.StatusForbidden, errors.New("action not allowed"))
 		return
 	}
 
@@ -132,7 +146,7 @@ func AtualizarUsuario(w http.ResponseWriter, r *http.Request) {
 	defer db.Close()
 
 	repositorio := repository.NewUserRepository(db)
-	erro = repositorio.Atualizar(usuarioID, usuario)
+	erro = repositorio.Atualizar(usuarioId, usuario)
 	if erro != nil {
 		messages.Erro(w, http.StatusInternalServerError, erro)
 		return
@@ -147,6 +161,18 @@ func ExcluirUsuario(w http.ResponseWriter, r *http.Request) {
 	usuarioId, erro := strconv.ParseUint(parametros["id"], 10, 64)
 	if erro != nil {
 		messages.Erro(w, http.StatusBadRequest, erro)
+		return
+	}
+
+	usuarioIDNoToken, erro := authentication.ExtrairUsuarioID(r)
+	if erro != nil {
+		messages.Erro(w, http.StatusUnauthorized, erro)
+		return
+	}
+
+	// fmt.Println(usuarioIDNoToken)
+	if usuarioId != usuarioIDNoToken {
+		messages.Erro(w, http.StatusForbidden, errors.New("action not allowed"))
 		return
 	}
 
