@@ -157,3 +157,18 @@ func (repository usuarios) Seguir(usuarioId, seguidorId uint64) error {
 
 	return nil
 }
+
+// DeSeguir -> uncheck one user follow another user
+func (repository usuarios) DeSeguir(usuarioId, seguidorId uint64) error {
+	statement, erro := repository.db.Prepare("DELETE FROM followers WHERE user_id = ? AND follower_id = ?")
+	if erro != nil {
+		return erro
+	}
+	defer statement.Close()
+
+	if _, erro = statement.Exec(usuarioId, seguidorId); erro != nil {
+		return erro
+	}
+
+	return nil
+}
