@@ -1,14 +1,15 @@
 package middlewares
 
 import (
-	"fmt"
+	"api/src/authentication"
+	"api/src/messages"
 	"log"
 	"net/http"
 )
 
 // Logger -> print information on the terminal
 func Logger(next http.HandlerFunc) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request){
+	return func(w http.ResponseWriter, r *http.Request) {
 		log.Printf("\n %s %s %s", r.Method, r.RequestURI, r.Host)
 
 		next(w, r)
@@ -17,9 +18,11 @@ func Logger(next http.HandlerFunc) http.HandlerFunc {
 
 // Autenticar -> middleware to authentic token
 func Autenticar(next http.HandlerFunc) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request){
-		fmt.Println("Validando...")
-
+	return func(w http.ResponseWriter, r *http.Request) {
+		if erro := authentication.ValidarToken(r); erro != nil {
+			messages.Erro(w, http.StatusUnauthorized, erro)
+			return
+		}
 		next(w, r)
 	}
 }
