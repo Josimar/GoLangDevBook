@@ -263,3 +263,30 @@ func DesSeguirUsuario(w http.ResponseWriter, r *http.Request) {
 
 	messages.JSON(w, http.StatusNoContent, nil)
 }
+
+// BuscaSeguidores -> traz todos os segidores de um usuário
+func BuscaSeguidores(w http.ResponseWriter, r *http.Request) {
+	parametros := mux.Vars(r)
+	usuarioId, erro := strconv.ParseUint(parametros["id"], 10, 64)
+	if erro != nil {
+		messages.Erro(w, http.StatusBadRequest, erro)
+		return
+	}
+
+	db, erro := banco.Conectar()
+	if erro != nil {
+		messages.Erro(w, http.StatusInternalServerError, erro)
+		return
+	}
+	defer db.Close()
+
+	repositorio := repository.NewUserRepository(db)
+	seguidores, erro := repositorio.BuscarSeguidores(usuarioId)
+	if erro != nil {
+		messages.Erro(w, http.StatusInternalServerError, erro)
+		return
+	}
+
+	messages.JSON(w, http.StatusOK, seguidores)
+
+}

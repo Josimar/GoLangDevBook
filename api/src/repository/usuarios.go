@@ -172,3 +172,24 @@ func (repository usuarios) DeSeguir(usuarioId, seguidorId uint64) error {
 
 	return nil
 }
+
+// BuscarSeguidores -> busca os seguidores de um usuário
+func (repository usuarios) BuscarSeguidores(usuarioId uint64) ([]models.Usuario, error) {
+	linhas, erro := repository.db.Query("SELECT U.id, U.name, U.email FROM users U INNER JOIN followers F ON U.id = F.follower_id WHERE F.user_id = ?", usuarioId)
+	if erro != nil {
+		return nil, erro
+	}
+	defer linhas.Close()
+
+	var usuarios []models.Usuario
+	for linhas.Next() {
+		var usuario models.Usuario
+		if erro = linhas.Scan(&usuario.ID, &usuario.Name, &usuario.Email); erro != nil {
+			return nil, erro
+		}
+
+		usuarios = append(usuarios, usuario)
+	}
+
+	return usuarios, nil
+}
