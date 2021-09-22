@@ -193,3 +193,24 @@ func (repository usuarios) BuscarSeguidores(usuarioId uint64) ([]models.Usuario,
 
 	return usuarios, nil
 }
+
+// BuscarSeguindo -> busca usuários que um usuário está seguindo
+func (repository usuarios) BuscarSeguindo(usuarioId uint64) ([]models.Usuario, error) {
+	linhas, erro := repository.db.Query("SELECT U.id, U.name, U.email FROM users U INNER JOIN followers F ON U.id = F.user_id WHERE F.follower_id = ?", usuarioId)
+	if erro != nil {
+		return nil, erro
+	}
+	defer linhas.Close()
+
+	var usuarios []models.Usuario
+	for linhas.Next() {
+		var usuario models.Usuario
+		if erro = linhas.Scan(&usuario.ID, &usuario.Name, &usuario.Email); erro != nil {
+			return nil, erro
+		}
+
+		usuarios = append(usuarios, usuario)
+	}
+
+	return usuarios, nil
+}
