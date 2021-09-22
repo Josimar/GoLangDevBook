@@ -6,6 +6,7 @@ import (
 	"api/src/messages"
 	"api/src/models"
 	"api/src/repository"
+	"api/src/security"
 	"encoding/json"
 	"errors"
 	"github.com/gorilla/mux"
@@ -314,4 +315,65 @@ func BuscaSeguindo(w http.ResponseWriter, r *http.Request) {
 	}
 
 	messages.JSON(w, http.StatusOK, seguidores)
+}
+
+// UpdatePassword -> Update user password
+func UpdatePassword(w http.ResponseWriter, r *http.Request) {
+	usuarioIdNoToken, erro := authentication.ExtrairUsuarioID(r)
+	if erro != nil {
+		messages.Erro(w, http.StatusUnauthorized, erro)
+		return
+	}
+
+	parametros := mux.Vars(r)
+	usuarioId, erro := strconv.ParseUint(parametros["id"], 10, 64)
+	if erro != nil {
+		messages.Erro(w, http.StatusBadRequest, erro)
+		return
+	}
+
+	if usuarioIdNoToken != usuarioId {
+		messages.Erro(w, http.StatusForbidden, errors.New("não é possível atualizar um usuário que não seja o seu"))
+		return
+	}
+
+	corpoRequisicao, erro := ioutil.ReadAll(r.Body)
+
+	var senha models.Senha
+	if erro = json.Unmarshal(corpoRequisicao, &senha); erro != nil {
+		messages.Erro(w, http.StatusBadRequest, erro)
+		return
+	}
+
+	db, erro := banco.Conectar()
+	if erro != nil {
+		messages.Erro(w, http.StatusInternalServerError, erro)
+		return
+	}
+	defer db.Close()
+
+	repositorio := repository.NewUserRepository(db)
+	senhaSalvaNoBanco, erro := repositorio.BuscarSenha(usuarioId)
+	if erro != nil {
+		messages.Erro(w, http.StatusInternalServerError, erro)
+		return
+	}
+
+	if erro = security.VerificarSenha(senhaSalvaNoBanco, senha.Atual); erro != nil {
+		messages.Erro(w, http.StatusUnauthorized, errors.New("senha atual diferente da encontrada na base de dados"))
+		return
+	}
+
+	senhaComHash, erro := security.Hash(senha.Nova)
+	if erro != nil {
+		messages.Erro(w, http.StatusBadRequest, erro)
+		return
+	}
+
+	if erro = repositorio.AtualizarSenha(usuarioId, string(senhaComHash)); erro != nil {
+		messages.Erro(w, http.StatusInternalServerError, erro)
+		return
+	}
+
+	messages.JSON(w, http.StatusOK, nil)
 }
