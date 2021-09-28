@@ -25,5 +25,14 @@ go get github.com/badoux/checkmail
 go get golang.org/x/crypto/bcrypt
 go get github.com/dgrijalva/jwt-go
 
+# Create directory WebApp
+Enter directory
 
+## Start application
+go mod init webapp
+
+## start API with web
+dir - API
+- go build
+- ./api
 
