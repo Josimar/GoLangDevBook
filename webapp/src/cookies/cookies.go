@@ -34,3 +34,18 @@ func Salvar(w http.ResponseWriter, Id, token string) error {
 
 	return nil
 }
+
+// Ler -> check if cookie exists and return value in cookies
+func Ler(r *http.Request) (map[string]string, error) {
+	cookie, erro := r.Cookie("dados")
+	if erro != nil {
+		return nil, erro
+	}
+
+	valores := make(map[string]string)
+	if erro = s.Decode("dados", cookie.Value, &valores); erro != nil {
+		return nil, erro
+	}
+
+	return valores, nil
+}
