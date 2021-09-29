@@ -5,19 +5,51 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DevBook - Main</title>
     <link rel="stylesheet" type="text/css" href="/assets/css/login.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css">
 </head>
 <body>
-    <h2>Main page</h2>
+    {{ template "header" }}
 
-    {{ range .Publicacoes }}
+    <div class="container-fluid">
+        <div class="row mt-4">
+            <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5 col-xl-5">
+                <h3>New Post</h3>
+                <fieldset>
+                    <form id="nova-publicacao" method="post">
+                        <div class="form-group">
+                            <label for="title">Title</label>
+                            <input type="text" name="title" id="title" class="form-control" required="required" placeholder="Insert a title">
+                        </div>
+                        <div class="form-group">
+                            <label for="description">Description</label>
+                            <textarea name="description" id="description" class="form-control" required="required" placeholder="Insert a content"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="content">Content</label>
+                            <textarea name="content" id="content" class="form-control" required="required" placeholder="Insert a content"></textarea>
+                        </div>
 
-        <h4>Title: {{ .Title }}</h4>
-        <h4>Content: {{ .Content }}</h4>
+                        <button class="btn btn-primary" type="submit">Publicar</button>
+                    </form>
+                </fieldset>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-7 col-lg-7 col-xl-7">
+                {{ range . }}
+                    <div class="jumbotron">
+                        <h1 class="display-4">{{ .Title }}</h1>
+                        <p class="lead">{{ .Description }}</p>
+                        <p class="lead">{{ .Content }}</p>
+                        <a href="#">{{ .Username }} - {{ .CreatedAt }}</a>
+                        <hr class="my-4">
+                        <p>actions</p>
+                    </div>
+                {{ end }}
+            </div>
+        </div>
+    </div>
 
-        <hr />
-    {{ end }}
+    {{ template "footer" }}
 
-    <h1>{{ .OutroCampo }}</h1>
-
+    {{ template "scripts" }}
 </body>
 </html>
