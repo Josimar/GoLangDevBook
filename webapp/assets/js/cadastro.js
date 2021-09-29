@@ -22,7 +22,6 @@ function criarUsuario(event){
     }).done(function(){
         alert("Usuário cadastrado com sucesso!");
     }).error(function(erro){
-        console.log(erro)
         alert("Erro as cadastrar usuário!");
     })
 }

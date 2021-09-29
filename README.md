@@ -24,6 +24,7 @@ go get github.com/go-sql-driver/mysql
 go get github.com/badoux/checkmail
 go get golang.org/x/crypto/bcrypt
 go get github.com/dgrijalva/jwt-go
+go get github.com/gorilla/mux
 
 # Create directory WebApp
 Enter directory

@@ -10,6 +10,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 )
 
 // Login -> authenticate the user
@@ -51,5 +52,9 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// fmt.Println(token)
-	w.Write([]byte(token))
+	// w.Write([]byte(token))
+
+	usuarioId := strconv.FormatUint(usuarioSalvoBanco.ID, 10)
+
+	messages.JSON(w, http.StatusOK, models.DadosAutenticacao{Id: usuarioId, Token: token})
 }

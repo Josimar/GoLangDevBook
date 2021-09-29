@@ -10,6 +10,15 @@ import (
 var (
 	// Porta -> Connection Port
 	Porta = 0
+
+	// ApiUrl -> url da API
+	ApiUrl = ""
+
+	// HashKey -> utilizado para autenticar cookie
+	HashKey []byte
+
+	// BlockKey -> utilizado para criptografar o cookie
+	BlockKey []byte
 )
 
 // Carregar -> vai carregar as váriaveis do ambiente
@@ -24,4 +33,8 @@ func Carregar() {
 	if erro != nil {
 		Porta = 8001
 	}
+
+	ApiUrl = os.Getenv("API_URL")
+	HashKey = []byte(os.Getenv("HASH_KEY"))
+	BlockKey = []byte(os.Getenv("BLOCK_KEY"))
 }
