@@ -13,7 +13,7 @@ function criarPublicacao(event){
         }
     }).done(function() {
         window.location = "/home";
-    }).error(function(){
+    }).fail(function(){
         alert('Error to create post')
     })
 }

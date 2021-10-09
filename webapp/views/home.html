@@ -34,15 +34,13 @@
                 </fieldset>
             </div>
             <div class="col-xs-12 col-sm-12 col-md-7 col-lg-7 col-xl-7">
-                {{ range . }}
-                    <div class="jumbotron">
-                        <h1 class="display-4">{{ .Title }}</h1>
-                        <p class="lead">{{ .Description }}</p>
-                        <p class="lead">{{ .Content }}</p>
-                        <a href="#">{{ .Username }} - {{ .CreatedAt }}</a>
-                        <hr class="my-4">
-                        <p>actions</p>
-                    </div>
+                {{ range .Publicacoes }}
+                    {{ if (eq .UserId $.UsuarioId) }}
+                        {{ template "posts-with-permission" . }}
+                    {{ else }}
+                        {{ template "posts-no-permisson" . }}
+                    {{ end }}
+                    <hr />
                 {{ end }}
             </div>
         </div>
@@ -52,6 +50,6 @@
 
     {{ template "scripts" }}
 
-    <script src="/assets/js/cadastro.js"></script>
+    <script src="/assets/js/posts.js"></script>
 </body>
 </html>

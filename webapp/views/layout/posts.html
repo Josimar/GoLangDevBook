@@ -1,0 +1,39 @@
+{{ define "editar" }}
+  <a href="/editar">Editar Post</a>
+{{ end }}
+
+{{ define "deletar" }}
+  <a href="/deletar">Deletar Post</a>
+{{ end }}
+
+{{ define "curtidas" }}
+  <span>{{ .Likes }} curtidas</span>
+{{ end }}
+
+{{ define "posts-header" }}
+  <h1 class="display-4">{{ .Title }}</h1>
+  <p class="lead">{{ .Description }}</p>
+  <p class="lead">{{ .Content }}</p>
+  <a href="#">{{ .Username }} - {{ .CreatedAt.Format "02/01/2006" }}</a>
+  <hr class="my-4">
+{{ end }}
+
+{{ define "posts-with-permission" }}
+  <div class="jumbotron" data-post-id="{{ .ID }}">
+      {{ template "posts-header" . }}
+      <p>
+        {{ template "curtidas" . }}
+        {{ template "editar" }}
+        {{ template "deletar" }}
+      </p>
+  </div>
+{{ end }}
+
+{{ define "posts-no-permisson" }}
+  <div class="jumbotron" data-post-id="{{ .ID }}">
+    {{ template "posts-header" . }}
+    <p>
+      {{ template "curtidas" . }}
+    </p>
+  </div>
+{{ end }}

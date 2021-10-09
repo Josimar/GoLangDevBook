@@ -12,7 +12,7 @@ function fazerLogin(event){
         }
     }).done(function(){
         window.location = "/home"
-    }).error(function(erro){
+    }).fail(function(erro){
         alert("Usuário não encontrado!");
     })
 }
