@@ -1,12 +1,15 @@
 {{ define "editar" }}
-  <a href="/editar">Editar Post</a>
+  <a href="/editar" style="text-decoration: none"><i class="fas fa-edit"></i></a>
 {{ end }}
 
 {{ define "deletar" }}
-  <a href="/deletar">Deletar Post</a>
+  <a href="/deletar" style="text-decoration: none">
+    <i class="fas fa-trash text-danger"></i>
+  </a>
 {{ end }}
 
 {{ define "curtidas" }}
+  <i class="fas fa-heart"></i>
   <span>{{ .Likes }} curtidas</span>
 {{ end }}
 
