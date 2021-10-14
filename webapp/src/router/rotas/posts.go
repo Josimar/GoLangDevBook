@@ -13,9 +13,15 @@ var rotasPosts = []Rota{
 		RequerAutenticacao: true,
 	},
 	{
-		Uri:                "/posts/{postId}/curtir",
+		Uri:                "/posts/{postId}/like",
 		Metodo:             http.MethodPost,
 		Funcao:             controllers.CurtirPost,
+		RequerAutenticacao: true,
+	},
+	{
+		Uri:                "/posts/{postId}/dislike",
+		Metodo:             http.MethodPost,
+		Funcao:             controllers.DesCurtirPost,
 		RequerAutenticacao: true,
 	},
 }
