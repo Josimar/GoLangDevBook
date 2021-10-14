@@ -1,4 +1,5 @@
 $('#nova-publicacao').on('submit', criarPublicacao)
+$('#curtir-post').on('submit', curtirPost)
 
 function criarPublicacao(event){
     event.preventDefault()
@@ -15,5 +16,28 @@ function criarPublicacao(event){
         window.location = "/home";
     }).fail(function(){
         alert('Error to create post')
+    })
+}
+
+function curtirPost(event){
+    event.preventDefault()
+
+    const elementClick = $(event.target);
+    const postId = elementClick.closest('div').data('data-post-id')
+
+    elementClick.prop('disabled', true);
+
+    $.ajax({
+        url: `/posts/${postId}/curtir`,
+        method: "POST"
+    }).done(function (){
+        const contadorCurtida = elementClick.next('span')
+        const quantityCurtida = parseInt(contadorCurtida.text());
+
+        contadorCurtida.text(quantityCurtida + 1);
+    }).fail(function (){
+        alert("Erro ao curtido o Post!")
+    }).always(function (){
+        elementClick.prop('disabled', false);
     })
 }

@@ -12,4 +12,10 @@ var rotasPosts = []Rota{
 		Funcao:             controllers.CriarPosts,
 		RequerAutenticacao: true,
 	},
+	{
+		Uri:                "/posts/{postId}/curtir",
+		Metodo:             http.MethodPost,
+		Funcao:             controllers.CurtirPost,
+		RequerAutenticacao: true,
+	},
 }
