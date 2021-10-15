@@ -24,4 +24,16 @@ var rotasPosts = []Rota{
 		Funcao:             controllers.DesCurtirPost,
 		RequerAutenticacao: true,
 	},
+	{
+		Uri:                "/posts/{postId}/editar",
+		Metodo:             http.MethodGet,
+		Funcao:             controllers.CarregarPaginaEditarPost,
+		RequerAutenticacao: true,
+	},
+	{
+		Uri:                "/posts/{postId}",
+		Metodo:             http.MethodPut,
+		Funcao:             controllers.AtualizarPost,
+		RequerAutenticacao: true,
+	},
 }

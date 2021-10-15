@@ -1,9 +1,9 @@
 {{ define "editar" }}
-  <a href="/editar" style="text-decoration: none"><i class="fas fa-edit"></i></a>
+  <a href="/posts/{{ .ID }}/editar" style="text-decoration: none"><i class="fas fa-edit"></i></a>
 {{ end }}
 
 {{ define "deletar" }}
-  <a href="/deletar" style="text-decoration: none">
+  <a href="/posts/{{ .ID }}/deletar" style="text-decoration: none">
     <i class="fas fa-trash text-danger"></i>
   </a>
 {{ end }}
@@ -26,8 +26,8 @@
       {{ template "posts-header" . }}
       <p>
         {{ template "curtidas" . }}
-        {{ template "editar" }}
-        {{ template "deletar" }}
+        {{ template "editar" . }}
+        {{ template "deletar" . }}
       </p>
   </div>
 {{ end }}

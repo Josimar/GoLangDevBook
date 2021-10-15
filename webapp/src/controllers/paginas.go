@@ -3,6 +3,7 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/gorilla/mux"
 	"net/http"
 	"strconv"
 	"webapp/src/config"
@@ -59,4 +60,35 @@ func CarregarPaginaPrincipal(w http.ResponseWriter, r *http.Request) {
 		Publicacoes: publicacoes,
 		UsuarioId:   usuarioId,
 	})
+}
+
+// CarregarPaginaEditarPost -> Load page post edit
+func CarregarPaginaEditarPost(w http.ResponseWriter, r *http.Request) {
+	parameters := mux.Vars(r)
+	postId, erro := strconv.ParseUint(parameters["postId"], 10, 64)
+	if erro != nil {
+		messages.JSON(w, http.StatusBadRequest, messages.ErroApi{Erro: erro.Error()})
+		return
+	}
+
+	url := fmt.Sprintf("%s/posts/%d", config.ApiUrl, postId)
+	response, erro := requisicoes.FazerRequisicaoComAutenticacao(r, http.MethodGet, url, nil)
+	if erro != nil {
+		messages.JSON(w, http.StatusInternalServerError, messages.ErroApi{Erro: erro.Error()})
+		return
+	}
+	defer response.Body.Close()
+
+	if response.StatusCode >= 400 {
+		messages.TratarStatusCodeDeErro(w, response)
+		return
+	}
+
+	var post models.Publicacao
+	if erro = json.NewDecoder(response.Body).Decode(&post); erro != nil {
+		messages.JSON(w, http.StatusUnprocessableEntity, messages.ErroApi{Erro: erro.Error()})
+		return
+	}
+
+	utils.ExecutarTemplate(w, "post-edit.html", post)
 }

@@ -91,3 +91,40 @@ func DesCurtirPost(w http.ResponseWriter, r *http.Request) {
 
 	messages.JSON(w, response.StatusCode, nil)
 }
+
+// AtualizarPost -> Update a post
+func AtualizarPost(w http.ResponseWriter, r *http.Request) {
+	parameters := mux.Vars(r)
+	postId, erro := strconv.ParseUint(parameters["postId"], 10, 64)
+	if erro != nil {
+		messages.JSON(w, http.StatusBadRequest, messages.ErroApi{Erro: erro.Error()})
+		return
+	}
+
+	r.ParseForm()
+	publicacao, erro := json.Marshal(map[string]string{
+		"title":       r.FormValue("title"),
+		"content":     r.FormValue("content"),
+		"description": r.FormValue("description"),
+	})
+
+	if erro != nil {
+		messages.JSON(w, http.StatusBadRequest, messages.ErroApi{Erro: erro.Error()})
+		return
+	}
+
+	url := fmt.Sprintf("%s/posts/%d", config.ApiUrl, postId)
+	response, erro := requisicoes.FazerRequisicaoComAutenticacao(r, http.MethodPut, url, bytes.NewBuffer(publicacao))
+	if erro != nil {
+		messages.JSON(w, http.StatusInternalServerError, messages.ErroApi{Erro: erro.Error()})
+		return
+	}
+	defer response.Body.Close()
+
+	if response.StatusCode >= 400 {
+		messages.TratarStatusCodeDeErro(w, response)
+		return
+	}
+
+	messages.JSON(w, response.StatusCode, nil)
+}

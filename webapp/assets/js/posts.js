@@ -1,7 +1,9 @@
-$('#nova-publicacao').on('submit', criarPublicacao)
+$('#nova-publicacao').on('submit', criarPublicacao);
 
 $(document).on('click', '.curtir-post', curtirPost);
 $(document).on('click', '.descurtir-post', descurtirPost);
+
+$('#atualizar-post').on('click', atualizarPost);
 
 // $('#curtir-post').on('submit', curtirPost)
 
@@ -76,5 +78,27 @@ function descurtirPost(event){
         alert("Erro ao curtido o Post!")
     }).always(function (){
         elementClick.prop('disabled', false);
+    })
+}
+
+function atualizarPost(event){
+    $(this).prop('disabled', true);
+
+    const postId = $(this).data('post-id');
+
+    $.ajax({
+        url: `/posts/${postId}`,
+        method: "PUT",
+        data: {
+            title: $('#title').val(),
+            content: $('#content').val(),
+            description: $('#description').val(),
+        }
+    }).done(function(){
+        alert("Post editada com sucesso")
+    }).fail(function(){
+        alert("Erro ao editar o post")
+    }).always(function(){
+        $('#atualizar-post').prop('disabled', true);
     })
 }

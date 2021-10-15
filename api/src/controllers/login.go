@@ -8,6 +8,7 @@ import (
 	"api/src/repository"
 	"api/src/security"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"strconv"
@@ -51,7 +52,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		messages.Erro(w, http.StatusInternalServerError, erro)
 		return
 	}
-	// fmt.Println(token)
+	fmt.Println(token)
 	// w.Write([]byte(token))
 
 	usuarioId := strconv.FormatUint(usuarioSalvoBanco.ID, 10)
