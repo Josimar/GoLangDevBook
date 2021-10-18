@@ -128,3 +128,28 @@ func AtualizarPost(w http.ResponseWriter, r *http.Request) {
 
 	messages.JSON(w, response.StatusCode, nil)
 }
+
+// DeletarPost -> Delete a post
+func DeletarPost(w http.ResponseWriter, r *http.Request) {
+	parameters := mux.Vars(r)
+	postId, erro := strconv.ParseUint(parameters["postId"], 10, 64)
+	if erro != nil {
+		messages.JSON(w, http.StatusBadRequest, messages.ErroApi{Erro: erro.Error()})
+		return
+	}
+
+	url := fmt.Sprintf("%s/posts/%d", config.ApiUrl, postId)
+	response, erro := requisicoes.FazerRequisicaoComAutenticacao(r, http.MethodDelete, url, nil)
+	if erro != nil {
+		messages.JSON(w, http.StatusInternalServerError, messages.ErroApi{Erro: erro.Error()})
+		return
+	}
+	defer response.Body.Close()
+
+	if response.StatusCode >= 400 {
+		messages.TratarStatusCodeDeErro(w, response)
+		return
+	}
+
+	messages.JSON(w, response.StatusCode, nil)
+}

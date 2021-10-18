@@ -13,22 +13,20 @@ function fazerLogin(event){
     }).done(function() {
         window.location = "/home"
     }).fail(function( jqxhr, textStatus, error ) {
-        alert("Usuário não encontrado!");
-        alert(textStatus);
-        alert(error);
+        Swal.fire("Ops..", "Usuário não encontrado!", "error");
     })
 
+    /*
     jqxhr.done(function() {
         alert( "first Done" );
     });
 
     jqxhr.fail(function(jqxhr, textStatus, error) {
         alert( "first fail" );
-        alert(textStatus);
-        alert(error);
     });
 
     jqxhr.always(function() {
         alert( "first complete" );
     });
+    */
 }

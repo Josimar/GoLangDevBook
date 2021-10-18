@@ -4,6 +4,7 @@ $(document).on('click', '.curtir-post', curtirPost);
 $(document).on('click', '.descurtir-post', descurtirPost);
 
 $('#atualizar-post').on('click', atualizarPost);
+$('#deletar-post').on('click', deletarPost);
 
 // $('#curtir-post').on('submit', curtirPost)
 
@@ -21,8 +22,8 @@ function criarPublicacao(event){
     }).done(function() {
         window.location = "/home";
     }).fail(function(){
-        alert('Error to create post')
-    })
+        Swal.fire('Error!', 'Error to create post', 'error')
+    });
 }
 
 function curtirPost(event){
@@ -47,10 +48,10 @@ function curtirPost(event){
         elementClick.addClass('text-danger');
         elementClick.removeClass('curtir-post');
     }).fail(function (){
-        alert("Erro ao curtido o Post!")
+        Swal.fire('Error!', 'Error to like post', 'error')
     }).always(function (){
         elementClick.prop('disabled', false);
-    })
+    });
 }
 
 function descurtirPost(event){
@@ -58,7 +59,7 @@ function descurtirPost(event){
 
     const elementClick = $(event.target);
 
-    const postId = elementClick.closest('div').data('data-post-id')
+    const postId = elementClick.closest('div').data('post-id')
 
     elementClick.prop('disabled', true);
 
@@ -75,10 +76,10 @@ function descurtirPost(event){
         elementClick.removeClass('text-danger');
         elementClick.addClass('curtir-post');
     }).fail(function (){
-        alert("Erro ao curtido o Post!")
+        Swal.fire('Error!', 'Error to dislike a post', 'error')
     }).always(function (){
         elementClick.prop('disabled', false);
-    })
+    });
 }
 
 function atualizarPost(event){
@@ -95,10 +96,44 @@ function atualizarPost(event){
             description: $('#description').val(),
         }
     }).done(function(){
-        alert("Post editada com sucesso")
+        Swal.fire("Sucesso!", "Post editada com sucesso", "success")
+            .then(function(){
+               window.location = "/home";
+            });
     }).fail(function(){
-        alert("Erro ao editar o post")
+        Swal.fire('Error!', 'Error to edit a post', 'error')
     }).always(function(){
         $('#atualizar-post').prop('disabled', true);
-    })
+    });
+}
+
+function deletarPost(event){
+    event.preventDefault()
+
+    Swal.fire({
+        title: "Atenção!",
+        text: "Tem certeza que deseja excluir? essa ação é irreversível.",
+        showCancelButton: true,
+        cancelButtonText: "Cancelar",
+        icon: "warning"
+    }).then(function(confirm){
+        if (!confirm.value) return;
+
+        const elementClick = $(event.target);
+        const post = elementClick.closest('div');
+        const postId = post.data('post-id')
+
+        elementClick.prop('disabled', true);
+
+        $.ajax({
+            url: `/posts/${postId}`,
+            method: "DELETE",
+        }).done(function(){
+            post.fadeOut("slow", function(){
+                $(this).remove();
+            })
+        }).fail(function(){
+            Swal.fire('Error!', 'Error to delete a post', 'error')
+        });
+    });
 }

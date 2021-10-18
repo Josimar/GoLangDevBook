@@ -36,4 +36,10 @@ var rotasPosts = []Rota{
 		Funcao:             controllers.AtualizarPost,
 		RequerAutenticacao: true,
 	},
+	{
+		Uri:                "/posts/{postId}",
+		Metodo:             http.MethodDelete,
+		Funcao:             controllers.DeletarPost,
+		RequerAutenticacao: true,
+	},
 }

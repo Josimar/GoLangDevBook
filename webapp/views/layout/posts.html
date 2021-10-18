@@ -3,13 +3,11 @@
 {{ end }}
 
 {{ define "deletar" }}
-  <a href="/posts/{{ .ID }}/deletar" style="text-decoration: none">
-    <i class="fas fa-trash text-danger"></i>
-  </a>
+    <i class="fas fa-trash text-danger deletar-post" style="cursor: pointer"></i>
 {{ end }}
 
 {{ define "curtidas" }}
-  <i class="fas fa-heart curtir-post"></i>
+  <i class="fas fa-heart curtir-post" style="cursor: pointer"></i>
   <span>{{ .Likes }} curtidas</span>
 {{ end }}
 
