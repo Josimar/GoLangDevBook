@@ -17,6 +17,12 @@ import (
 // CarregarTelaDeLogin -> render the login screen
 func CarregarTelaDeLogin(w http.ResponseWriter, r *http.Request) {
 	// w.Write([]byte("Login screen"))
+	cookie, _ := cookies.Ler(r)
+	if cookie["token"] != "" {
+		http.Redirect(w, r, "/home", 302)
+		return
+	}
+
 	utils.ExecutarTemplate(w, "login.html", nil)
 }
 

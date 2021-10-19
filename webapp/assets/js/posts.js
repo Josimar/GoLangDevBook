@@ -4,7 +4,7 @@ $(document).on('click', '.curtir-post', curtirPost);
 $(document).on('click', '.descurtir-post', descurtirPost);
 
 $('#atualizar-post').on('click', atualizarPost);
-$('#deletar-post').on('click', deletarPost);
+$('.deletar-post').on('click', deletarPost);
 
 // $('#curtir-post').on('submit', curtirPost)
 
@@ -31,7 +31,7 @@ function curtirPost(event){
 
     const elementClick = $(event.target);
 
-    const postId = elementClick.closest('div').data('data-post-id')
+    const postId = elementClick.closest('div').data('post-id')
 
     elementClick.prop('disabled', true);
 
@@ -131,7 +131,7 @@ function deletarPost(event){
         }).done(function(){
             post.fadeOut("slow", function(){
                 $(this).remove();
-            })
+            });
         }).fail(function(){
             Swal.fire('Error!', 'Error to delete a post', 'error')
         });
