@@ -18,4 +18,28 @@ var rotasUsuarios = []Rota{
 		Funcao:             controllers.CarregarPaginaCadastroUsuario,
 		RequerAutenticacao: false,
 	},
+	{
+		Uri:                "/buscar-usuario",
+		Metodo:             http.MethodGet,
+		Funcao:             controllers.CarregarPaginaUsuarios,
+		RequerAutenticacao: true,
+	},
+	{
+		Uri:                "/usuario/{usuarioId}",
+		Metodo:             http.MethodGet,
+		Funcao:             controllers.CarregarPerfilUsuario,
+		RequerAutenticacao: true,
+	},
+	{
+		Uri:                "/usuario/{usuarioId}/unfollow",
+		Metodo:             http.MethodPost,
+		Funcao:             controllers.PararDeSeguirUsuario,
+		RequerAutenticacao: true,
+	},
+	{
+		Uri:                "/usuario/{usuarioId}/follow",
+		Metodo:             http.MethodPost,
+		Funcao:             controllers.SeguirUsuario,
+		RequerAutenticacao: true,
+	},
 }

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DevBook - {{ .Usuario.Name }}</title>
+  <link rel="stylesheet" type="text/css" href="/assets/css/login.css">
+  <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css">
+</head>
+<body>
+{{ template "header" }}
+
+{{ $SeguidoPeloUsuarioLogado := false }}
+{{ range .Usuario.Followers }}
+{{ if (eq .ID $.UsuarioLogadoId) }}
+{{ $SeguidoPeloUsuarioLogado = true }}
+{{ end }}
+{{ end }}
+
+<div class="container-fluid">
+  <div class="row mt-4">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Perfil do Usuário</h5>
+          <h6 class="card-subtitle mb-2 text-muted">
+            {{ .Usuario.Name }} - membro desde: {{ .Usuario.CreatedAt.Format "02/01/2006" }}
+          </h6>
+
+          <p class="card-text">
+            <a href="#">Seguidores: {{ len .Usuario.Followers }}</a>
+          </p>
+
+          <p class="card-text">
+            <a href="#">Seguindo: {{ len .Usuario.Follows }}</a>
+          </p>
+
+
+          <a href="#" class="cart-link">
+            {{ if $SeguidoPeloUsuarioLogado }}
+            <button id="desseguir" class="btn btn-info" data-usuario-id="{{ .Usuario.ID }}">
+              Parar de Seguir
+            </button>
+            {{ else }}
+            <button id="seguir" class="btn btn-info" data-usuario-id="{{ .Usuario.ID }}">
+              Seguir
+            </button>
+            {{ end }}
+          </a>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mt4">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card title">Publicações do usuário {{ .Usuario.Name }}</h5>
+          <p class="card-text">
+            {{ range .Usuario.Posts }}
+              {{ template "posts-with-permission" . }}
+            {{ else }}
+              <p class="text-muted text-center">Nenhuma publicação</p>
+            {{ end }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{{ template "footer" }}
+{{ template "scripts" }}
+
+<script src="/assets/js/posts.js"></script>
+<script src="/assets/js/usuario.js"></script>
+</body>
+</html>

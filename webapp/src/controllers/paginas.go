@@ -6,6 +6,7 @@ import (
 	"github.com/gorilla/mux"
 	"net/http"
 	"strconv"
+	"strings"
 	"webapp/src/config"
 	"webapp/src/cookies"
 	"webapp/src/messages"
@@ -97,4 +98,58 @@ func CarregarPaginaEditarPost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	utils.ExecutarTemplate(w, "post-edit.html", post)
+}
+
+// CarregarPaginaUsuarios -> Search users
+func CarregarPaginaUsuarios(w http.ResponseWriter, r *http.Request) {
+	nameOrNick := strings.ToLower(r.URL.Query().Get("usuario"))
+	url := fmt.Sprintf("%s/usuarios?usuario=%s", config.ApiUrl, nameOrNick)
+
+	response, erro := requisicoes.FazerRequisicaoComAutenticacao(r, http.MethodGet, url, nil)
+	if erro != nil {
+		messages.JSON(w, http.StatusInternalServerError, messages.ErroApi{Erro: erro.Error()})
+		return
+	}
+	defer response.Body.Close()
+
+	if response.StatusCode >= 400 {
+		messages.TratarStatusCodeDeErro(w, response)
+		return
+	}
+
+	var usuarios []models.Usuario
+	if erro = json.NewDecoder(response.Body).Decode(&usuarios); erro != nil {
+		messages.JSON(w, http.StatusUnprocessableEntity, messages.ErroApi{Erro: erro.Error()})
+		return
+	}
+
+	utils.ExecutarTemplate(w, "usuarios.html", usuarios)
+}
+
+// CarregarPerfilUsuario -> Load user perfil
+func CarregarPerfilUsuario(w http.ResponseWriter, r *http.Request) {
+	parameters := mux.Vars(r)
+	usuarioId, erro := strconv.ParseUint(parameters["usuarioId"], 10, 64)
+	if erro != nil {
+		messages.JSON(w, http.StatusBadRequest, messages.ErroApi{Erro: erro.Error()})
+		return
+	}
+
+	usuario, erro := models.BuscarUsuarioCompleto(usuarioId, r)
+	// fmt.Println(usuario, erro)
+	if erro != nil {
+		messages.JSON(w, http.StatusInternalServerError, messages.ErroApi{Erro: erro.Error()})
+		return
+	}
+
+	cookie, _ := cookies.Ler(r)
+	usuarioLogadoId, _ := strconv.ParseUint(cookie["id"], 10, 64)
+	utils.ExecutarTemplate(w, "usuario.html", struct {
+		Usuario         models.Usuario
+		UsuarioLogadoId uint64
+	}{
+		Usuario:         usuario,
+		UsuarioLogadoId: usuarioLogadoId,
+	})
+
 }
