@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DevBook - Atualização senha</title>
+  <link rel="stylesheet" type="text/css" href="/assets/css/login.css">
+  <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css">
+</head>
+<body>
+{{ template "header" }}
+
+<div class="container-fluid">
+  <div class="row mt-4">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <h3 class="card-title">Atualização da senha</h3>
+          <form id="atualizar-senha">
+            <div class="form-group">
+              <label for="senha-atual">Senha atual</label>
+              <input type="password" id="senha-atual" name="senha-atual" class="form-control" required="required" placeholder="Senha atual" autocomplete="current-password">
+            </div>
+            <div class="form-group">
+              <label for="senha-nova">Senha nova</label>
+              <input type="password" id="senha-nova" name="senha-nova" class="form-control" required="required" placeholder="Senha nova" autocomplete="new-password">
+            </div>
+            <div class="form-group">
+              <label for="confirmar-senha">Confirmar senha</label>
+              <input type="password" id="confirmar-senha" name="confirmar-senha" class="form-control" required="required" placeholder="Senha nova" autocomplete="new-password">
+            </div>
+            <button type="submit" class="btn btn-info">Atualizar senha</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+{{ template "footer" }}
+{{ template "scripts" }}
+
+<script src="/assets/js/posts.js"></script>
+<script src="/assets/js/usuario.js"></script>
+</body>
+</html>

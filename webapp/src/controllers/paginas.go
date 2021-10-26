@@ -173,3 +173,26 @@ func CarregarPerfilUsuarioLogado(w http.ResponseWriter, r *http.Request) {
 
 	utils.ExecutarTemplate(w, "perfil.html", usuario)
 }
+
+// CarregarPerfilDeEdicaoUsuario -> Load page of edit
+func CarregarPerfilDeEdicaoUsuario(w http.ResponseWriter, r *http.Request) {
+	cookie, _ := cookies.Ler(r)
+	usuarioId, _ := strconv.ParseUint(cookie["id"], 10, 64)
+
+	// para não duplicar o metodo vou usar o canal(concorrencia) por que já está pronto
+	canal := make(chan models.Usuario)
+	go models.BuscarDadosDoUsuario(canal, usuarioId, r)
+	usuario := <-canal
+
+	if usuario.ID == 0 {
+		messages.JSON(w, http.StatusInternalServerError, messages.ErroApi{Erro: "Erro ao buscar usuário"})
+		return
+	}
+
+	utils.ExecutarTemplate(w, "editar-usuario.html", usuario)
+}
+
+// CarregarPaginaDeAtualizacaoUsuario -> Load page to change the password
+func CarregarPaginaDeAtualizacaoUsuario(w http.ResponseWriter, r *http.Request) {
+	utils.ExecutarTemplate(w, "atualizar-senha.html", nil)
+}
