@@ -15,7 +15,7 @@
   <h1 class="display-4">{{ .Title }}</h1>
   <p class="lead">{{ .Description }}</p>
   <p class="lead">{{ .Content }}</p>
-  <a href="#">{{ .Username }} - {{ .CreatedAt.Format "02/01/2006" }}</a>
+  <a href="/usuario/{{ .UserId }}">{{ .Username }} - {{ .CreatedAt.Format "02/01/2006" }}</a>
   <hr class="my-4">
 {{ end }}
 
